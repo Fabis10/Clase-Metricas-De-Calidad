@@ -7,6 +7,8 @@
 - se realiza la instalación de Nodemon como dependencia de desarrollo
 - npm i -D nodemon o npm i --save-dev nodemon
 - crear en la raíz del proyecto un archivo llamado nodemon.json
+
+```
   {
   "watch": ["src"],
   "ext": "ts json",
@@ -16,10 +18,11 @@
   },
   "verbose": true,
   "restartable": "rs"
-
 }
+```
 
 ### Configurar el scripts en el pagkage.json
+
 ```
 "scripts": {
    "build": "tsc",
