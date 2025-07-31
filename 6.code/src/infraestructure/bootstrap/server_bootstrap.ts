@@ -1,5 +1,6 @@
 import http from 'http';
 import express from 'express';
+import envs from '../../infraestructure/config/environment-vars';
 
 export default class ServerBootstrap {
   //Atributos, propiedades o caracteristicas
@@ -11,7 +12,7 @@ export default class ServerBootstrap {
   init(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       const server = http.createServer(this.app);
-      const PORT = process.env.PORT;
+      const PORT = envs.PORT;
 
       server.listen(PORT)
         .on('listening', () => {

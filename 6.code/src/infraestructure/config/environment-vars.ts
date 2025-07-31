@@ -5,6 +5,7 @@
  */
 import * as joi from 'joi';
 import "dotenv/config";
+require('dotenv').config();
 
 export type ReturnEnvironmentVars = {
   PORT: number;
@@ -37,7 +38,6 @@ function validateEnvVars(vars: NodeJS.ProcessEnv): ValidationEnvironmentVars {
 
 const loadEnvVars = (): ReturnEnvironmentVars => {
   const result = validateEnvVars(process.env);
-  console.log(result);
   if (result.error) {
     throw new Error(`Error validating environment variables: ${result.error.message}`);
   }

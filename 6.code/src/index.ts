@@ -1,7 +1,5 @@
 import app from './app';
 import ServerBootstrap from './infraestructure/bootstrap/server_bootstrap';
-require('dotenv').config();
-
 const server = new ServerBootstrap(app);
 /**
  * async - await
