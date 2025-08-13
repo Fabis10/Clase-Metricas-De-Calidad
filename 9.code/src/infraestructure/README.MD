@@ -1,0 +1,1 @@
+Bootstrap va en esta carpeta porque es la que conecta con el servidor, config va porque ahi va la conexion a la db
