@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import UserApplication from "../../application/UserApplication";
 import User from "../../domain/User";
-import DataNotFoundError from "../shared/errors/NotFoundError";
+import DataNotFoundError from "../shared/errors/DataNotFoundError";
+import AlreadyExistsError from "../shared/errors/AlreadyExistsError";
 
 export class UserController {
   private app: UserApplication;
@@ -35,6 +36,11 @@ export class UserController {
         .status(201)
         .json(userId.toString());
     } catch (e) {
+      if (e instanceof AlreadyExistsError) {
+        return response
+          .status(409)
+          .json({ message: e.message });
+      }
       if (e instanceof Error) {
         return response
           .status(500)

@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import userRoutes from '../routes/UserRoutes';
-import DataNotFoundError from '../shared/errors/NotFoundError';
+import DataNotFoundError from '../shared/errors/DataNotFoundError';
 
 class App {
   private app: express.Application;
@@ -25,8 +25,8 @@ class App {
   private errorHandlerMiddleware(): void {
     this.app.use((err: any, req: Request, res: Response, next: NextFunction) => {
       if (err instanceof DataNotFoundError) {
-        console.log("Etoy en el app notFoundMiddleware")
-        return res.status(err.statusCode)
+        return res
+          .status(err.statusCode)
           .json({
             message: err.message
           });

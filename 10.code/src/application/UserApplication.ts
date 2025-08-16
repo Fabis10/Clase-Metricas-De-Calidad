@@ -1,6 +1,7 @@
 import User from "../domain/User";
 import UserPort from "../domain/UserPort";
-import DataNotFoundError from "../infraestructure/shared/errors/NotFoundError";
+import AlreadyExistsError from "../infraestructure/shared/errors/AlreadyExistsError";
+import DataNotFoundError from "../infraestructure/shared/errors/DataNotFoundError";
 
 export default class UserApplication {
 
@@ -16,7 +17,7 @@ export default class UserApplication {
     if (!existingUser) {
       return await this.port.createUser(user);
     }
-    throw new Error("El usuario ya existe");
+    throw new AlreadyExistsError("El usuario ya existe");
   }
 
   async updateUser(id: number, user: Partial<User>): Promise<boolean> {
