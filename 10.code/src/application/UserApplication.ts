@@ -1,5 +1,6 @@
 import User from "../domain/User";
 import UserPort from "../domain/UserPort";
+import DataNotFoundError from "../infraestructure/shared/errors/NotFoundError";
 
 export default class UserApplication {
 
@@ -22,7 +23,7 @@ export default class UserApplication {
     const existingUser = await this.port.getUserById(id);
 
     if (!existingUser) {
-      throw new Error("El usuario no existe");
+      throw new DataNotFoundError("El usuario no existe");
     }
     if (user.email) {
       const emailTaken = await this.port.getUserByEmail(user.email);
@@ -51,7 +52,7 @@ export default class UserApplication {
   async getUserByEmail(email: string): Promise<User | null> {
     return await this.port.getUserByEmail(email);
   }
-  
+
   async getAllUsers(): Promise<Array<User>> {
     const users = await this.port.getAllUsers();
     if (users) {

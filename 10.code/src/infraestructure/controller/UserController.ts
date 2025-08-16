@@ -1,6 +1,7 @@
+import { Request, Response } from "express";
 import UserApplication from "../../application/UserApplication";
 import User from "../../domain/User";
-import { Request, Response } from "express";
+import DataNotFoundError from "../shared/errors/NotFoundError";
 
 export class UserController {
   private app: UserApplication;
@@ -51,16 +52,14 @@ export class UserController {
           .status(400)
           .json({ message: "no se mando un id correcto" });
       }
-      const user = await this.app.getUserById(userId);
-      if (!user) {
-        return res
-          .status(404)
-          .json({ message: "Usuario no encontrado" });
-      }
+      const user: User | null = await this.getUserIfExists(userId);
       return res
         .status(200)
         .json(user);
     } catch (error) {
+      if (error instanceof DataNotFoundError) {
+        throw error;
+      }
       if (error instanceof Error) {
         return res
           .status(500)
@@ -75,17 +74,17 @@ export class UserController {
       const { email } = (req.params);
       if (!/^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(email))
         return res.status(400).json({ error: "Correo electrónico no válido" });
-      const user = await this.app.getUserByEmail(email);
-      if (!user) {
-        return res
-          .status(404)
-          .json({ message: "Usuario no encontrado" });
-      }
+
+      const user: User | null = await this.getUserIfExists(email);
       return res
         .status(200)
         .json(user);
     } catch (error) {
+      if (error instanceof DataNotFoundError) {
+        throw error;
+      }
       if (error instanceof Error) {
+        console.error(error);
         return res
           .status(500)
           .json({ message: "Error en el servidor" });
@@ -123,15 +122,14 @@ export class UserController {
           .status(400)
           .json({ message: "no se mando un id correcto" });
       }
-      const user = await this.app.deleteUser(userId);
-      if (!user) {
-        return res
-          .status(404)
-          .json({ message: "Usuario no encontrado" });
-      }
+      const user: User | null = await this.getUserIfExists(userId);
       return res
-        .status(204);
+        .status(204)
+        .json();
     } catch (error) {
+      if (error instanceof DataNotFoundError) {
+        throw error;
+      }
       if (error instanceof Error) {
         return res
           .status(500)
@@ -181,8 +179,11 @@ export class UserController {
 
       if (!updated) return res.status(400).json({ message: "usuario no encontrado o sin cambios" });
 
-      return res.status(200);
+      return res.status(200).json({ message: "Se actualizo" });
     } catch (error) {
+      if (error instanceof DataNotFoundError) {
+        throw error;
+      }
       if (error instanceof Error) {
         return res
           .status(500)
@@ -190,5 +191,25 @@ export class UserController {
       }
     }
     return res.status(400).json({ message: "Error en la peticion" });
+  }
+
+
+  //Funciones adicionales
+
+  private getUserIfExists(searchParam: number): Promise<User | null>;
+  private getUserIfExists(searchParam: string): Promise<User | null>;
+  private async getUserIfExists(searchParam: number | string): Promise<User | null> {
+    let user: User | null = null;
+
+    if (typeof searchParam === "string") {
+      user = await this.app.getUserByEmail(searchParam);
+    } else if (!isNaN(searchParam)) {
+      user = await this.app.getUserById(searchParam);
+    }
+
+    if (!user) {
+      throw new DataNotFoundError("Usuario no encontrado");
+    }
+    return user;
   }
 }

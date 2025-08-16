@@ -27,8 +27,59 @@ router.get("/users", async (req, res) => {
     res.status(400)
       .json({
         message: "Error al traer los usuarios"
-      })
+      });
+  }
+});
+
+router.get("/users/id/:id", async (req, res) => {
+  try {
+    await userController.searchUserById(req, res);
+  } catch (error) {
+    const errorMessage = "Error al traer el usuario";
+    console.error(errorMessage);
+    res.status(404)
+      .json({
+        message: errorMessage
+      });
+  }
+});
+
+router.get("/users/email", async (req, res) => {
+  try {
+    await userController.searchUserByEmail(req, res);
+  } catch (error) {
+    const errorMessage = "Error al traer el usuario";
+    console.error(errorMessage);
+    res.status(404)
+      .json({
+        message: errorMessage
+      });
+  }
+});
+
+router.put("/users/:id", async (req, res) => {
+  try {
+    await userController.updataUser(req, res);
+  } catch (error) {
+    const errorMessage = "Error al actualizar el usuario";
+    console.error(errorMessage);
+    res.status(400)
+      .json({
+        message: errorMessage
+      });
   }
 })
 
+router.delete("/users/:id", async (req, res) => {
+  try {
+    await userController.deleteUser(req, res);
+  } catch (error) {
+    const errorMessage = "Error al eliminar el usuario";
+    console.error(errorMessage, error);
+    res.status(400)
+      .json({
+        message: errorMessage
+      })
+  }
+})
 export default router;
