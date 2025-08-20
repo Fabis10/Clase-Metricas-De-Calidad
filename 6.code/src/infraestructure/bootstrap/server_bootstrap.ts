@@ -16,7 +16,7 @@ export default class ServerBootstrap {
 
       server.listen(PORT)
         .on('listening', () => {
-          console.log(`El servidor empezo en el puerto ${PORT}`);
+          console.log(`El servidor empezo en el puerto ${PORT} link: http://localhost:${PORT}`);
           resolve(true);
         })
         .on('error', (err) => {
@@ -25,5 +25,4 @@ export default class ServerBootstrap {
         });
     });
   }
-
 }
